@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Api;
 public class AppDbContext : IdentityDbContext // для взаимодействия с базой
@@ -12,4 +13,14 @@ public class AppDbContext : IdentityDbContext // для взаимодейств
 
     public DbSet<AppUser> AppUsers { get; set; } // описание новой таблицы
     public DbSet<Product> Products { get; set; } // таблица Products
+    /* protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.Entity<Product>().HasData(FakeProductGenerator.GenerateProductList());
+    } */
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.ConfigureWarnings(warnings =>
+            warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+    }
 }
