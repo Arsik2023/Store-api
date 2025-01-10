@@ -18,14 +18,5 @@ public class AppDbContext : IdentityDbContext // для взаимодейств
         base.OnModelCreating(builder);
         builder.Entity<Product>().HasData(FakeProductGenerator.GenerateProductList());
     }
-    /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.ConfigureWarnings(warnings =>
-            warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
-    } */
-    /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.ConfigureWarnings(warnings =>
-          warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
-    } */
+
 }

@@ -1,15 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
+using Api;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyApp.Namespace
 {
 
     public class ProductController : StoreController
     {
-        [HttpGet()]
-        public async Task<ActionResult<string>> Get()
+
+        public ProductController(AppDbContext dbContext) : base(dbContext) // наследование от родителя
         {
-            return Ok(await Task.FromResult<string>("Hello world"));
+
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetProducts()
+        {
+            return Ok(await dbContext.Products.ToListAsync());
+        }
     }
 }
