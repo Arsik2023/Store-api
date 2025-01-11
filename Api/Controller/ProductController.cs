@@ -25,7 +25,7 @@ namespace MyApp.Namespace
             return Ok(responseServer);
         }
 
-        [HttpGet]
+        [HttpGet("{id}", Name = nameof(GetProductById))]
         public async Task<IActionResult> GetProductById(int id)
         {
             if (id <= 0)
@@ -56,7 +56,67 @@ namespace MyApp.Namespace
                     Result = product
                 });
             }
+        }
+        [HttpPost]
+        public async Task<ActionResult<ResponseServer>> CreateProduct(
+            [FromBody] ProductCreateDto productCreateDto
+        )
+        {
+            try
+            {
+                if (ModelState.IsValid) // проверка правильности переданной модели 
+                {
+                    if (productCreateDto.Image == null
+                    || productCreateDto.Image.Length == 0)
+                    {
+                        return BadRequest(new ResponseServer
+                        {
+                            StatusCode = HttpStatusCode.BadRequest,
+                            IsSucces = false,
+                            ErrorMessage = { "Image не может быть пустым" }
+                        });
+                    }
+                    else
+                    {
+                        Product item = new()
+                        {
+                            Name = productCreateDto.Name,
+                            Description = productCreateDto.Description,
+                            SpecialTag = productCreateDto.SpecialTag,
+                            Category = productCreateDto.Category,
+                            Price = productCreateDto.Price,
+                            Image = $"https://placehold.co/200"
+                        };
 
+                        await dbContext.Products.AddAsync(item);
+                        await dbContext.SaveChangesAsync();
+                        ResponseServer response = new()
+                        {
+                            StatusCode = HttpStatusCode.Created,
+                            Result = item
+                        };
+                        return CreatedAtRoute(nameof(GetProductById), new { id = item.Id }, response);
+                    }
+                }
+                else
+                {
+                    return BadRequest(new ResponseServer
+                    {
+                        StatusCode = HttpStatusCode.BadRequest,
+                        IsSucces = false,
+                        ErrorMessage = { "Модель данных не подходит" }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseServer
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    IsSucces = false,
+                    ErrorMessage = { "Что-то поломалось", ex.Message }
+                });
+            }
         }
     }
 }
