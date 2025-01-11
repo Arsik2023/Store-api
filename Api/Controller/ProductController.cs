@@ -57,6 +57,7 @@ namespace MyApp.Namespace
                 });
             }
         }
+
         [HttpPost]
         public async Task<ActionResult<ResponseServer>> CreateProduct(
             [FromBody] ProductCreateDto productCreateDto
@@ -118,6 +119,7 @@ namespace MyApp.Namespace
                 });
             }
         }
+
         [HttpPut]
         public async Task<ActionResult<ResponseServer>> UpdateProduct(
             int id, [FromBody] ProductUpdateDto productUpdateDto
@@ -191,6 +193,52 @@ namespace MyApp.Namespace
                     IsSucces = false,
                     StatusCode = HttpStatusCode.BadRequest,
                     ErrorMessages = { "Что-то пошло не так", ex.Message }
+                });
+            }
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult<ResponseServer>> RemoveProductById(int id)
+        {
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest(new ResponseServer
+                    {
+                        IsSucces = false,
+                        StatusCode = HttpStatusCode.BadRequest,
+                        ErrorMessages = { "Неверный id" }
+                    });
+                }
+                Product productFromDb = await dbContext.Products.FindAsync(id);
+
+                if (productFromDb == null)
+                {
+                    return NotFound(new ResponseServer
+                    {
+                        IsSucces = false,
+                        StatusCode = HttpStatusCode.NotFound,
+                        ErrorMessages = { "Продукт по указанному id не найден" }
+                    });
+                }
+
+                dbContext.Products.Remove(productFromDb);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new ResponseServer
+                {
+                    IsSucces = true,
+                    StatusCode = HttpStatusCode.NoContent
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseServer
+                {
+                    IsSucces = false,
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ErrorMessages = { "Всё плохо", ex.Message }
                 });
             }
         }
