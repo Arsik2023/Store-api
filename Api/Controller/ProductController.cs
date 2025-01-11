@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Api;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace MyApp.Namespace
 {
@@ -16,7 +17,12 @@ namespace MyApp.Namespace
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            return Ok(await dbContext.Products.ToListAsync());
+            ResponseServer responseServer = new ResponseServer
+            {
+                StatusCode = HttpStatusCode.OK,
+                Result = await dbContext.Products.ToListAsync()
+            };
+            return Ok(responseServer);
         }
     }
 }
