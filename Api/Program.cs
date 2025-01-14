@@ -7,6 +7,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddPosgreSqlDbContext(builder.Configuration); // включение класса PosgreSqlServiceExtension
 builder.Services.AddPostgreSqlIdentityContext(); // включение класса PostgreSqlIdentityContext
+builder.Services.AddConfigureIdentityOptions(); // настройки пароля
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -17,5 +19,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 app.UseHttpsRedirection();
-app.Run();
 
+await app.Services.InitializeRoleAsync();
+
+app.Run();
