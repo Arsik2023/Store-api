@@ -8,6 +8,7 @@ builder.Services.AddControllers();
 builder.Services.AddPosgreSqlDbContext(builder.Configuration); // включение класса PosgreSqlServiceExtension
 builder.Services.AddPostgreSqlIdentityContext(); // включение класса PostgreSqlIdentityContext
 builder.Services.AddConfigureIdentityOptions(); // настройки пароля
+builder.Services.AddJwtTokenGenerator();
 
 var app = builder.Build();
 
