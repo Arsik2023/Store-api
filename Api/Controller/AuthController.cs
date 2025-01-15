@@ -11,15 +11,18 @@ namespace MyApp.Namespace
     {
         private readonly UserManager<AppUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly JwtTokenGenerator jwtTokenGenerator;
 
         public AuthController(
             AppDbContext dbContext,
             UserManager<AppUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            JwtTokenGenerator jwtTokenGenerator)
         : base(dbContext)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
+            this.jwtTokenGenerator = jwtTokenGenerator;
         }
 
         [HttpPost]
@@ -84,7 +87,41 @@ namespace MyApp.Namespace
                 StatusCode = HttpStatusCode.OK,
                 Result = "Регистрация завершена"
             });
+        }
 
+        [HttpPost]
+        public async Task<ActionResult<ResponseServer>> Login(
+            [FromBody] LoginRequestDto loginRequestDto
+        )
+        {
+            var userFromDb = await dbContext
+                .AppUsers
+                .FirstOrDefaultAsync(u => u.Email.ToLower() ==
+                    loginRequestDto.Email.ToLower());
+
+            if (userFromDb == null
+                || !await userManager.CheckPasswordAsync(userFromDb, loginRequestDto.Password))
+            {
+                return BadRequest(new ResponseServer
+                {
+                    IsSucces = false,
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ErrorMessages = { "Такого пользователя нет" }
+                });
+            }
+
+            var roles = await userManager.GetRolesAsync(userFromDb);
+            var token = jwtTokenGenerator.GenerateJwtToken(userFromDb, roles);
+
+            return Ok(new ResponseServer
+            {
+                StatusCode = HttpStatusCode.OK,
+                Result = new LoginResponseDto
+                {
+                    Email = userFromDb.Email,
+                    Token = token,
+                }
+            });
         }
     }
 }

@@ -10,13 +10,12 @@ public class JwtTokenGenerator
     private readonly string secretKey;
     public JwtTokenGenerator(IConfiguration configuration)
     {
-        this.secretKey = configuration["AuthSettings.SecretKey"];
+        this.secretKey = configuration["AuthSettings:SecretKey"];
     }
 
-    public string GenerateToken(AppUser appUser, IList<string> roles)
+    public string GenerateJwtToken(AppUser appUser, IList<string> roles)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(secretKey);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -30,7 +29,7 @@ public class JwtTokenGenerator
             Expires = DateTime.UtcNow.AddDays(1),
 
             SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key),
+                new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
                 SecurityAlgorithms.HmacSha256Signature
             )
         };
