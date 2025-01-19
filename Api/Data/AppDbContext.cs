@@ -12,8 +12,8 @@ public class AppDbContext : IdentityDbContext // для взаимодейств
 
     public DbSet<AppUser> AppUsers { get; set; } // описание новой таблицы
     public DbSet<Product> Products { get; set; } // таблица Products
-    public DbSet<ShoppingCart> ShoppingCart { get; set; }
-    public DbSet<CartItem> CartItem { get; set; }
+    public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+    public DbSet<CartItem> CartItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
