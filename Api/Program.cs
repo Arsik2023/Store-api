@@ -3,7 +3,7 @@ using Api;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGenCustomConfig();
 builder.Services.AddControllers();
 builder.Services.AddPosgreSqlDbContext(builder.Configuration); // включение класса PosgreSqlServiceExtension
 builder.Services.AddPostgreSqlIdentityContext(); // включение класса PostgreSqlIdentityContext
