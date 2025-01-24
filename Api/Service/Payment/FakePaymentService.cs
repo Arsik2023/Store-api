@@ -84,8 +84,6 @@ public class FakePaymentService : IPaymentService
             });
         }
 
-
-
         orderHeader.Status = SharedData.OrderStatus.ReadyToShip;
 
         await dbContext.SaveChangesAsync();
