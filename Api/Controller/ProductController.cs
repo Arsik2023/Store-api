@@ -25,6 +25,25 @@ namespace MyApp.Namespace
             return Ok(responseServer);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> FetchProductsWithPagination(
+            int skip = 0, int take = 5
+        )
+        {
+            var products = await dbContext
+                .Products
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            ResponseServer responseServer = new ResponseServer
+            {
+                StatusCode = HttpStatusCode.OK,
+                Result = products
+            };
+            return Ok(responseServer);
+        }
+
         [HttpGet("{id}", Name = nameof(GetProductById))]
         public async Task<IActionResult> GetProductById(int id)
         {
