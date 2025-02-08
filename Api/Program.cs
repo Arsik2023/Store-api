@@ -8,7 +8,7 @@ builder.Services.AddControllers();
 builder.Services.AddPosgreSqlDbContext(builder.Configuration); // включение класса PosgreSqlServiceExtension
 builder.Services.AddPostgreSqlIdentityContext(); // включение класса PostgreSqlIdentityContext
 builder.Services.AddConfigureIdentityOptions(); // настройки пароля
-builder.Services.AddJwtTokenGenerator();
+builder.Services.AddJwtTokenGenerator(); // добавление jwt
 builder.Services.AddAuthenticationConfig(builder.Configuration);
 builder.Services.AddCors();
 builder.Services.AddShoppingCartService();
